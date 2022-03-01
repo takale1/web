@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!ELEMENT employeeinformation(employee+)>
+<!ELEMENT employee(firstname,lastname,ID,Phone_no.,Email_ID,Emergency_contact,DOB,Job_Titel,Manager,Department)>
+<!ELEMENT firstname(#PCDATA)>
+<!ELEMENT lastname(#PCDATA)>
+<!ELEMENT ID(#PCDATA)>
+<!ELEMENT Phone_no.(#PCDATA)>
+<!ELEMENT Email_ID(#PCDATA)>
+<!ELEMENT Emergency_contact(#PCDATA)>
+<!ELEMENT DOB(#PCDATA)>
+<!ELEMENT Job_Titel(#PCDATA)>
+<!ELEMENT Manager(#PCDATA)>
+<!ELEMENT Department(#PCDATA)>
+<!ATTLIST employee aid ID #Required>

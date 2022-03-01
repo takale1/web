@@ -1,0 +1,41 @@
+<xsl:stylesheet version = "1.0"
+xmlns:xsl = "http://www.w3.org/1999/XSL/Transform">
+
+<xsl:template match = "/employeeinformation">
+ <html>
+  <body>
+       <h1>Employee data</h1>
+
+       <table border = "1">
+          <tr bgcolor="lightblue">
+              <th>firstname</th>
+              <th>lastname</th>
+              <th>Phone_no.</th>
+              <th>Email_ID</th>
+              <th>Emergency_contact</th>
+              <th>DOB</th>
+              <th>Job_Titel</th>
+              <th>Manager</th>
+              <th>Department</th>
+
+          </tr>
+          <xsl:for-each select = "employee">
+            <tr>
+                <td><xsl:value-of select = "firstname"/></td>
+                <td><xsl:value-of select = "lastname"/></td>
+                <td><xsl:value-of select = "Phone_no."/></td>
+                <td><xsl:value-of select = "Email_ID"/></td>
+                <td><xsl:value-of select = "Emergency_contact"/></td>
+                <td><xsl:value-of select = "DOB"/></td>
+                <td><xsl:value-of select = "Job_Titel"/></td>
+                <td><xsl:value-of select = "Manager"/></td>
+                <td><xsl:value-of select = "Department"/></td>
+                
+                 </tr>
+          <xsl:for-each>
+       </table>
+
+  </body>
+</html>
+</xsl:template>
+</xsl:stylesheet>
