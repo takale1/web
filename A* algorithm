@@ -1,0 +1,91 @@
+include <bits/stdc++.h>
+using namespace std;
+
+
+bool a_star(int ini,int goal, vector <pair <int,int>> adj[],vector <int> &heuristic,int ver,int &ans){
+   
+    queue <pair <int,int>> q;
+    int g=0;     //HEURISTIC value OF initial node    
+    q.push({ini,g});
+   // int ans=INT_MAX;
+   
+    vector <bool> vis(ver,false);
+    while(!q.empty()){
+        int curr=q.front().first;
+        vis[curr]=true;
+        int currg=q.front().second;
+        q.pop();
+        vector <pair <int,int>> temp;
+        for(auto x:adj[curr]){
+         
+            int v=x.first;       //destination vertex
+            int wt=x.second;     //weight of the vertex
+            int f=curr+heuristic[v]+wt;
+           
+            if(vis[v]==false){
+                vis[v]=true;
+               
+                if(v==goal){
+                    ans=min(ans,f);
+                    return true;
+                }
+                else{
+                    temp.push_back({f,v});
+                }
+            }
+           
+        }
+        sort(temp.begin(),temp.end());
+       
+        if(temp.size()==0){
+            return false;
+        }
+        else{
+            int i=0;
+           
+            while(i<temp.size() && temp[0].first==temp[i].first){
+                q.push({temp[i].second,temp[i].first});
+                i++;
+            }
+        }
+        temp.clear();
+       
+    }
+   
+    return false;
+}
+
+int main()
+{
+   int ver,edg;
+   cout<<"enter no. of vertices and edges : ";
+   cin>>ver>>edg;
+   vector <pair <int,int>> adj[ver];
+   
+   for(int i=0;i<edg;i++){
+       int u,v,w;
+       cin>>u>>v>>w;
+       adj[u].push_back({v,w});
+      adj[v].push_back({u,w});
+       
+   }
+   
+   int ini,goal;
+   cout<<"Enter initial and goal value : ";
+   cin>>ini>>goal;
+   vector <int> heuristic(ver,0);
+   cout<<"Enter the heuristic value:  ";
+   for(int i=0;i<ver;i++){
+       cin>>heuristic[i];
+   }
+   
+   int ans=INT_MAX;
+   vector <bool> vis(ver,false);
+   if(a_star(ini,goal,adj,heuristic,ver,ans)){
+       cout<<"sucess  : "<<ans<<endl;
+   }
+   else{
+       cout<<"Failure :  "<<endl;
+   }
+    return 0;
+}
