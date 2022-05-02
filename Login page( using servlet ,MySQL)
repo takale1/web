@@ -1,0 +1,233 @@
+create database registration_form
+use registration_form
+create table user_register(Id int Auto_Increment,primary key(id),Name varchar(20) NOT NULL,
+-> Email varchar(30) NOT NULL,userName varchar(30) NOT NULL,password varchar(20) NOT NULL, Unique key(userName));
+
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Servlet</title>
+</head>
+<body>
+<h1 align="center"><a href="Register.html">Register</a></h1>
+</body>
+</html>
+
+
+Register.html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<style>
+body {
+background-image:
+url('https://image.shutterstock.com/image-photo/lime-retro-pastel-paper-background-260nw-598436903.jpg');
+background-repeat: no-repeat;
+background-size: cover;
+}
+</style>
+</head>
+<body>
+<form action="RegisterServlet" method="post">
+<h1 align="center" style="margin-top: 5%">Registration Form</h1>
+<table align="center" style="margin-top: 10%">
+<tr>
+<td>Name</td>
+<td><input type="text" name="name"></td>
+</tr>
+<tr>
+<td>Email Id</td>
+<td><input type="email" name="email"></td>
+</tr>
+<tr>
+<td>UserName</td>
+<td><input type="text" name="uname"></td>
+</tr>
+<tr>
+<td>Password</td>
+<td><input type="password" name="pass"></td>
+</tr>
+<tr>
+<td>Confirm Password</td>
+<td><input type="password" name="cpass"></td>
+</tr>
+<tr>
+<td></td>
+<td><input type="submit" value="Submit" id="button-1" /></td>
+</tr>
+</table>
+</form>
+</body>
+</html>
+
+
+DBConnect.java
+
+
+package com.register.conn;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+public class DBConnect {
+public static Connection getConn() {
+Connection con = null;
+String loadDriver = "com.mysql.jdbc.Driver";
+String dbURL = "jdbc:mysql://localhost:3306/Registration_form";
+String dbUSERNAME = "root";
+String dbPASSWORD = "root";
+try {
+Class.forName(loadDriver);
+con = DriverManager.getConnection(dbURL, dbUSERNAME, dbPASSWORD);
+} catch (ClassNotFoundException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+} catch (SQLException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}
+return con;
+}
+}
+
+
+
+RegisterBean.java
+package com.register.bean;
+public class RegisterBean {
+String Name;
+String EMail;
+String userName;
+String pasword;
+public RegisterBean(String name, String eMail, String userName, String pasword) {
+super();
+Name = name;
+EMail = eMail;
+this.userName = userName;
+this.pasword = pasword;
+}
+public RegisterBean() {
+super();
+// TODO Auto-generated constructor stub
+}
+public String getName() {
+return Name;
+}
+public void setName(String name) {
+Name = name;
+}
+public String getEMail() {
+return EMail;
+}
+public void setEMail(String eMail) {
+EMail = eMail;
+}
+public String getUserName() {
+return userName;
+}
+public void setUserName(String userName) {
+this.userName = userName;
+}
+public String getPasword() {
+return pasword;
+}
+public void setPasword(String pasword) {
+this.pasword = pasword;
+}
+}
+
+RegisterDao.java
+
+package com.register.dao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import com.register.bean.RegisterBean;
+import com.register.conn.DBConnect;
+public class RegisterDao {
+public String Regiterindb(RegisterBean bean) {
+Connection con = DBConnect.getConn();
+String sql = "insert into user_register(Id,Name,Email,userName,password) values (NULL,?,?,?,?) ";
+int i = 0;
+try {
+PreparedStatement preparedStatement = con.prepareStatement(sql);
+preparedStatement.setString(1, bean.getName());
+preparedStatement.setString(2, bean.getEMail());
+preparedStatement.setString(3, bean.getUserName());
+preparedStatement.setString(4, bean.getPasword());
+i = preparedStatement.executeUpdate();
+} catch (SQLException e) {
+// TODO Auto-generated catch block
+e.printStackTrace();
+}
+if (i != 0) {
+return "User is registered";
+} else {
+return "Error!!!!";
+}
+}
+}
+
+RegisterServlet.java
+package com.register.Servlet;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import com.register.bean.RegisterBean;
+import com.register.dao.RegisterDao;
+public class RegisterServlet extends HttpServlet {
+private static final long serialVersionUID = 1L;
+public RegisterServlet() {
+super();
+// TODO Auto-generated constructor stub
+}
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+throws ServletException, IOException {
+// TODO Auto-generated method stub
+System.out.println("inside post");
+response.setContentType("text/html");
+String name = request.getParameter("name");
+String email = request.getParameter("email");
+String username = request.getParameter("uname");
+String password = request.getParameter("pass");
+RegisterBean bean = new RegisterBean(name, email, username, password);
+RegisterDao dao = new RegisterDao();
+String result = dao.Regiterindb(bean);
+if (result.equals("User is registered")) {
+RequestDispatcher dispatcher = request.getRequestDispatcher("index.html");
+dispatcher.include(request, response);
+} else {
+RequestDispatcher dispatcher = request.getRequestDispatcher("Register.html");
+dispatcher.include(request, response);
+}
+}
+}
+web.xml 
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+id="WebApp_ID" version="3.0">
+<display-name>Register Servlet Demo</display-name>
+<welcome-file-list>
+<welcome-file>index.html</welcome-file>
+</welcome-file-list>
+<servlet>
+<servlet-name>RegisterServlet</servlet-name>
+<servlet-class>com.register.Servlet.RegisterServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>RegisterServlet</servlet-name>
+<url-pattern>/RegisterServlet</url-pattern>
+</servlet-mapping>
+</web-app>
+
+
